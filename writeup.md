@@ -10,7 +10,7 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/vehicle.png
+[image1]: ./examples/car-not-car.png
 [image2]: ./examples/non-vehicle.png
 [image3]: ./examples/sliding_windows.jpg
 [image4]: ./examples/sliding_window.jpg
@@ -37,9 +37,7 @@ The code for this step is contained in the function get_hog_features() lines XXX
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
-Car            Not-Car<br/><br/>
 ![alt text][image1]
-![alt text][image2]
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
