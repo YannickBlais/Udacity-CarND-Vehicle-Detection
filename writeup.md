@@ -50,7 +50,13 @@ Here is an example using the `YUV` color space and HOG parameters of `orientatio
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and...
+I tried various combinations of parameters and settled on parameters similar to what was discussed during the course, namely: 
+- orient = 9
+- pixels per cell = 8
+- cells per block = 2
+- color space = 'RGB', using channel = 0 or 'R'
+Adding more orientations or pix per cell or all color channel helped improve the results but at the cost of training and prediction time.
+
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
