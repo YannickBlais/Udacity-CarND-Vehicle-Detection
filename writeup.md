@@ -50,25 +50,30 @@ Here is an example using the `YUV` color space and HOG parameters of `orientatio
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and settled on parameters similar to what was discussed during the course, namely: 
-- orient = 9
-- pixels per cell = 8
+I tried various combinations of parameters and settled on parameters that seemed to work best for the givn video: 
+- orient = 32
+- pixels per cell = 16
 - cells per block = 2
-- color space = 'RGB', using channel = 0 or 'R'
-Adding more orientations or pix per cell or all color channel helped improve the results but at the cost of training and prediction time.
+- color space = 'YCrCb', using all channels
 
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+I trained a linear SVM sklear's LinearSVC package. This can be found in file training.py, function train_model(), lines XXX through XXX. Moreover, I used GridSearchCV to attempt to try to find the best parameters. I originally used the same parameters as described in sklearn's documentation like this (with svm.SVC):
+```
+parameters = {'kernel': ('linear', 'rbf'), 'C': [1, 10]}
+```
+but it turned out that the best parameters found were kernel='rbf' and C=10 were quite slow and I finally settled for simply allowing 'C' between '1' and '10'. However the value chosen by the algorithm was '1', the default value!
 
 ### Sliding Window Search
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+I decided to search window sizes of 32x32, 48x48, 64x64, and 128x128. This code is in file detect_vehicles.py, lines XXX through XXX. The different window sizes are represented in this image:
 
 ![alt text][image3]
+
+I chose those boxe sizes to perform searches at many different scales, and since the classification was rather fast compared with other options I tried, I could use a lot of boxes. have a lot of different 
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
