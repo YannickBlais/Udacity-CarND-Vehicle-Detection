@@ -132,7 +132,10 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.
 
-1. As discussed previously, I used a Linear SVM classifier with a mixture of HOG, spatial and histogram features to detect and track vehicles on the road. I first started using all features, 
+1. As discussed previously, I used a Linear SVM classifier with a mixture of HOG, spatial and histogram features to detect and track vehicles on the road. I first started using all features, with svm.SVC and letting GridSearchCV find the most optimal kernel and parameters but it became very heavy and slow (both for training and during classification), so I opted instead for a more simple option and more search windows.
 
-1. . Overall the performance of my pipeline is not too bad but much improvmements could be done
+3. While processing the video sequence, I 
 
+2. Overall the performance of the pipeline is not too bad but much improvmements could be done. I tried a lot of different parameters to no avail. It was especially difficult to find and track the white vehicle from the project video at mid-point in the sequence. After some investigation, I believe better training data, e.g. using Udacity training set, separating the data by hand as proposed in the course, should help. 
+
+3. 
