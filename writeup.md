@@ -134,8 +134,8 @@ Here I'll talk about the approach I took, what techniques I used, what worked an
 
 1. As discussed previously, I used a Linear SVM classifier with a mixture of HOG, spatial and histogram features to detect and track vehicles on the road. I first started using all features, with svm.SVC and letting GridSearchCV find the most optimal kernel and parameters but it became very heavy and slow (both for training and during classification), so I opted instead for a more simple option and more search windows.
 
-3. While processing the video sequence, I 
+3. While processing the video sequence, I used a sliding window approach that computes HOG features on the whole image (as proposed in the lessons) as opposed to computing per window, which reduces total detection time. The heat map and labeling routines are as proposed in the course and that didn't cause any particular issues.
 
-2. Overall the performance of the pipeline is not too bad but much improvmements could be done. I tried a lot of different parameters to no avail. It was especially difficult to find and track the white vehicle from the project video at mid-point in the sequence. After some investigation, I believe better training data, e.g. using Udacity training set, separating the data by hand as proposed in the course, should help. 
+4. Overall the performance of the pipeline is not too bad but much improvmements could be done. I tried a lot of different parameters sometimes to no avail. It was especially difficult to find and track the white vehicle from the project video at mid-point in the sequence. After some investigation, I believe improving training data, e.g. using Udacity training set, separating the data by hand as proposed in the course, should help.
 
-3. 
+5. Finally, it still takes a long time to process a single frame, ~1 second with the current settings, which is too slow for  what should processed in real-time. As described in (4), improving training data should improve detection or classification rate and therefore less search windows should be required. If this is not enough, multithreading should definately help as each search window can be processed independently.
