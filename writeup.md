@@ -22,7 +22,7 @@ The goals / steps of this project are the following:
 [image10]: ./examples/all_windows.png
 [image11]: ./examples/heat_map.png
 [image12]: ./examples/labels.png
-[image13]: ./examples/final_bboxes.png
+[image13]: ./examples/final_boxes.png
 [video1]: ./project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
@@ -119,7 +119,7 @@ Here's an example result showing the heatmap from a series of frames of video, t
 ### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
 ![alt text][image12]
 
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
+### Here the resulting bounding boxes are drawn onto a sample image:
 ![alt text][image13]
 
 
@@ -130,5 +130,9 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.
+
+1. As discussed previously, I used a Linear SVM classifier with a mixture of HOG, spatial and histogram features to detect and track vehicles on the road. I first started using all features, 
+
+1. . Overall the performance of my pipeline is not too bad but much improvmements could be done
 
