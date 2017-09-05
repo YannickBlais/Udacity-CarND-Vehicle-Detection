@@ -18,7 +18,8 @@ The goals / steps of this project are the following:
 [image6]: ./examples/48x48.png
 [image7]: ./examples/64x64.png
 [image8]: ./examples/128x128.png
-[image5]: ./examples/sliding_window.jpg
+[image9]: ./examples/all_windows.png
+[image10]: ./examples/all_windows.png
 [image6]: ./examples/bboxes_and_heat.png
 [image7]: ./examples/labels_map.png
 [image8]: ./examples/output_bboxes.png
@@ -87,13 +88,14 @@ I decided to search window sizes of 32x32, 48x48, 64x64, and 128x128. This code 
 ![alt text][image7]
 ![alt text][image8]
 
-I chose those boxe sizes to perform searches at many different scales, and since the classification was rather fast compared with other options I tried, I could use a lot of them. I mostly concentrated the search in the center where I often lost track of the white car (see discussion for more on this).
+I chose those boxe sizes to perform searches at many different scales, and since the classification was rather fast compared with other options that I tried, I could use a lot of them. The smaller boxes search more on locations in the road far away while the bigger ones on locations nearby the driver. I mostly concentrated the search in the center where I often lost track of the white car (see discussion for more on this).
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+As explained previously, I searched on 4 scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
-![alt text][image4]
+![alt text][image9]
+![alt text][image10]
 ---
 
 ### Video Implementation
