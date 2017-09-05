@@ -6,15 +6,15 @@ from scipy.ndimage.measurements import label
 import time
 
 
-orient = 9
-pix_per_cell = 8
+orient = 32
+pix_per_cell = 16
 cell_per_block = 2
 spatial_size = (32, 32)
 hist_bins = 32
 cspace = 'YCrCb'  # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-hog_channel = 0
+hog_channel = 'ALL'
 debug_folder = './debug'
-spatial_feat = False
+spatial_feat = True
 hist_feat = True
 hog_feat = True
 
@@ -41,6 +41,8 @@ out2 = cv2.VideoWriter('output_bbox_test_video.mp4', fourcc, 25.0, (1280, 720))
 cap = cv2.VideoCapture('./videos/project_video.mp4')
 i = 0
 
+# start_debug = 700
+# end_debug = 930
 start_debug = 0
 end_debug = 1000000
 last_frame_boxes_found = []
@@ -51,26 +53,68 @@ while (cap.isOpened()):
   i += 1
   if i < start_debug or i > end_debug:
     continue
+
+  # windows = slide_window(img, x_start_stop=[400, 1280], y_start_stop=[400, 500],
+  #                        xy_window=(64, 64), xy_overlap=(0.5, 0.5))
   #
-  # windows = slide_window(img, x_start_stop=[None, None], y_start_stop=[400, 668],
-  #                        xy_window=(64, 64), xy_overlap=(0.1, 0.1))
+  # windows = windows + slide_window(img, x_start_stop=[400, 1280], y_start_stop=[400, 550],
+  #                        xy_window=(96, 96), xy_overlap=(0.7, 0.7))
+  #
+  # windows = windows + slide_window(img, x_start_stop=[400, 1280], y_start_stop=[375, 550],
+  #                        xy_window=(128, 128), xy_overlap=(0.7, 0.7))
+  # #
+  # # windows = windows + slide_window(img, x_start_stop=[400, 1280], y_start_stop=[400, 668],
+  # #                        xy_window=(192, 192), xy_overlap=(0.7, 0.7))
+  #
+  # windows = windows + slide_window(img, x_start_stop=[400, 1280], y_start_stop=[375, 668],
+  #                        xy_window=(256, 256), xy_overlap=(0.5, 0.5))
+  #
+  # start = time.time()
+  # hot_windows = search_windows(img, windows, svc, X_scaler, color_space=cspace,
+  #                              spatial_size=spatial_size, hist_bins=hist_bins,
+  #                              orient=orient, pix_per_cell=pix_per_cell,
+  #                              cell_per_block=cell_per_block,
+  #                              hog_channel=hog_channel,
+  #                              spatial_feat=spatial_feat, hist_feat=hist_feat, hog_feat=hog_feat)
+  # end = time.time()
+  # print(end - start)
 
-  windows = slide_window(img, x_start_stop=[400, 1280], y_start_stop=[400, 668],
-                         xy_window=(96, 96), xy_overlap=(0.7, 0.7))
 
-  windows = windows + slide_window(img, x_start_stop=[400, 1280], y_start_stop=[375, 668],
-                         xy_window=(128, 128), xy_overlap=(0.5, 0.5))
-
-  windows = windows + slide_window(img, x_start_stop=[400, 1280], y_start_stop=[350, 668],
-                         xy_window=(192, 192), xy_overlap=(0.5, 0.5))
 
   start = time.time()
-  hot_windows = search_windows(img, windows, svc, X_scaler, color_space=cspace,
-                               spatial_size=spatial_size, hist_bins=hist_bins,
-                               orient=orient, pix_per_cell=pix_per_cell,
-                               cell_per_block=cell_per_block,
-                               hog_channel=hog_channel,
-                               spatial_feat=spatial_feat, hist_feat=hist_feat, hog_feat=hog_feat)
+  hot_windows = []
+  windows = find_cars(img, cspace, ystart=400, ystop=500, scale=0.5, svc=svc, X_scaler=X_scaler, orient=orient,
+                          pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
+  hot_windows += windows
+
+  windows = find_cars(img, cspace, ystart=400, ystop=550, scale=0.75, svc=svc, X_scaler=X_scaler, orient=orient,
+                          pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
+  hot_windows += windows
+
+  windows = find_cars(img, cspace, ystart=400, ystop=550, scale=1.0, svc=svc, X_scaler=X_scaler, orient=orient,
+                          pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
+  hot_windows += windows
+  #
+  # windows = find_cars(img, cspace, ystart=400, ystop=600, scale=1.5, svc=svc, X_scaler=X_scaler, orient=orient,
+  #                         pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
+  # hot_windows += windows
+  #
+  # windows = find_cars(img, cspace, ystart=400, ystop=600, scale=1.7, svc=svc, X_scaler=X_scaler, orient=orient,
+  #                         pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
+  # hot_windows += windows
+  #
+  # windows = find_cars(img, cspace, ystart=400, ystop=600, scale=1.3, svc=svc, X_scaler=X_scaler, orient=orient,
+  #                         pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
+  # hot_windows += windows
+
+  windows = find_cars(img, cspace, ystart=375, ystop=656, scale=2.0, svc=svc, X_scaler=X_scaler, orient=orient,
+                          pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
+  hot_windows += windows
+
+  windows = find_cars(img, cspace, ystart=375, ystop=656, scale=3.0, svc=svc, X_scaler=X_scaler, orient=orient,
+                          pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
+  hot_windows += windows
+
   end = time.time()
   print(end - start)
 
@@ -85,7 +129,7 @@ while (cap.isOpened()):
   heat = add_heat(heat, hot_windows)
 
   # Apply threshold to help remove false positives
-  heat = apply_threshold(heat, 1)
+  heat = apply_threshold(heat, 0)
 
   # Visualize the heatmap when displaying
   heatmap = np.clip(heat, 0, 255)
