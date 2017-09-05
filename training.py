@@ -32,10 +32,10 @@ def make_terrain_data(cspace='RGB', spatial_size=(32, 32), hist_bins=32, orient=
   cars = load_all_image_files(vehicles_folder)
   not_cars = load_all_image_files(non_vehicles_folder)
 
-  car_features = extract_features(cars, cspace, spatial_size, hist_bins,
+  car_features = extract_features(cars[0:500], cspace, spatial_size, hist_bins,
                                   orient, pix_per_cell, cell_per_block, hog_channel,
                                   spatial_feat, hist_feat, hog_feat)
-  not_car_features = extract_features(not_cars, cspace, spatial_size, hist_bins,
+  not_car_features = extract_features(not_cars[0:500], cspace, spatial_size, hist_bins,
                                       orient, pix_per_cell, cell_per_block, hog_channel,
                                       spatial_feat, hist_feat, hog_feat)
 
