@@ -83,10 +83,6 @@ def train_model(cspace='RGB', spatial_size=(32, 32), hist_bins=32, orient=9,
   else:
     clf = joblib.load(model_filename)
 
-
-  # svc = LinearSVC()
-
-  # svc.fit(features_train, labels_train)
   pred = clf.predict(features_test)
 
   from sklearn.metrics import accuracy_score

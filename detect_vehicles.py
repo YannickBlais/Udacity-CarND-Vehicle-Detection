@@ -1,6 +1,3 @@
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
-from lesson_functions import *
 from training import *
 from scipy.ndimage.measurements import label
 import time
@@ -25,13 +22,6 @@ svc, X_scaler = train_model(cspace, spatial_size, hist_bins, orient, pix_per_cel
                             spatial_feat, hist_feat, hog_feat)
 print("Training completed!")
 
-# for root, subFolders, files in os.walk('./test_images'):
-#   for filename in files:
-#     if filename.endswith(".png") or filename.endswith(".jpg") or \
-#       filename.endswith(".jpeg") or filename.endswith(".pgm"):
-#       img = mpimg.imread('./test_images/' + filename)
-#       # img = img * 255.0
-#       working_img = img.copy()
 
 # Define the codec and create VideoWriter object
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
@@ -41,10 +31,12 @@ out2 = cv2.VideoWriter('output_bbox_test_video.mp4', fourcc, 25.0, (1280, 720))
 cap = cv2.VideoCapture('./videos/project_video.mp4')
 i = 0
 
-# start_debug = 700
-# end_debug = 930
-start_debug = 0
-end_debug = 1000000
+start_debug = 1000
+end_debug = 1200
+# start_debug = 0
+# end_debug = 1000000
+fig = None
+row = 1
 last_frame_boxes_found = []
 while (cap.isOpened()):
   ret, img = cap.read()
@@ -53,33 +45,6 @@ while (cap.isOpened()):
   i += 1
   if i < start_debug or i > end_debug:
     continue
-
-  # windows = slide_window(img, x_start_stop=[400, 1280], y_start_stop=[400, 500],
-  #                        xy_window=(64, 64), xy_overlap=(0.5, 0.5))
-  #
-  # windows = windows + slide_window(img, x_start_stop=[400, 1280], y_start_stop=[400, 550],
-  #                        xy_window=(96, 96), xy_overlap=(0.7, 0.7))
-  #
-  # windows = windows + slide_window(img, x_start_stop=[400, 1280], y_start_stop=[375, 550],
-  #                        xy_window=(128, 128), xy_overlap=(0.7, 0.7))
-  # #
-  # # windows = windows + slide_window(img, x_start_stop=[400, 1280], y_start_stop=[400, 668],
-  # #                        xy_window=(192, 192), xy_overlap=(0.7, 0.7))
-  #
-  # windows = windows + slide_window(img, x_start_stop=[400, 1280], y_start_stop=[375, 668],
-  #                        xy_window=(256, 256), xy_overlap=(0.5, 0.5))
-  #
-  # start = time.time()
-  # hot_windows = search_windows(img, windows, svc, X_scaler, color_space=cspace,
-  #                              spatial_size=spatial_size, hist_bins=hist_bins,
-  #                              orient=orient, pix_per_cell=pix_per_cell,
-  #                              cell_per_block=cell_per_block,
-  #                              hog_channel=hog_channel,
-  #                              spatial_feat=spatial_feat, hist_feat=hist_feat, hog_feat=hog_feat)
-  # end = time.time()
-  # print(end - start)
-
-
 
   start = time.time()
   hot_windows = []
@@ -94,18 +59,6 @@ while (cap.isOpened()):
   windows = find_cars(img, cspace, ystart=400, ystop=550, scale=1.0, svc=svc, X_scaler=X_scaler, orient=orient,
                           pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
   hot_windows += windows
-  #
-  # windows = find_cars(img, cspace, ystart=400, ystop=600, scale=1.5, svc=svc, X_scaler=X_scaler, orient=orient,
-  #                         pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
-  # hot_windows += windows
-  #
-  # windows = find_cars(img, cspace, ystart=400, ystop=600, scale=1.7, svc=svc, X_scaler=X_scaler, orient=orient,
-  #                         pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
-  # hot_windows += windows
-  #
-  # windows = find_cars(img, cspace, ystart=400, ystop=600, scale=1.3, svc=svc, X_scaler=X_scaler, orient=orient,
-  #                         pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
-  # hot_windows += windows
 
   windows = find_cars(img, cspace, ystart=375, ystop=656, scale=2.0, svc=svc, X_scaler=X_scaler, orient=orient,
                           pix_per_cell=pix_per_cell, cell_per_block=cell_per_block, spatial_size=spatial_size, hist_bins=hist_bins, hog_img=None)
@@ -119,7 +72,6 @@ while (cap.isOpened()):
   print(end - start)
 
   img_boxes = draw_boxes(img, hot_windows, color=(0, 0, 255), thick=6)
-  # cv2.imwrite(debug_folder + '/boxes.png', img_boxes)
 
   # plt.imshow(window_img)
 
@@ -138,7 +90,10 @@ while (cap.isOpened()):
   labels = label(heatmap)
   label_img = np.copy(img)
   label_img, label_boxes = draw_labeled_bboxes(label_img, labels)
+  fig = plt.figure()
+  plt.imshow(labels[0], cmap='gray')
 
+  # Filter boxes using boxes-found-on-last-frame
   final_windows = []
   for label_box in label_boxes:
     for last_window in last_frame_boxes_found:
@@ -153,16 +108,20 @@ while (cap.isOpened()):
   for window in final_windows:
     cv2.rectangle(img, window[0], window[1], (0, 0, 255), 6)
 
-  # cv2.imwrite(debug_folder + '/final_boxes.png', final_boxes)
-  # cv2.imwrite(debug_folder + '/heat_map.png', heatmap)
-  # fig = plt.figure()
-  # plt.subplot(121)
-  # plt.imshow(final_boxes)
+  img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+  plt.imshow(img)
+
+  # img_boxes = cv2.cvtColor(img_boxes, cv2.COLOR_BGR2RGB)
+  # if fig == None:
+  #   fig = plt.figure()
+  # plt.subplot(6, 2, row)
+  # plt.imshow(img_boxes)
   # plt.title('Car Positions')
-  # plt.subplot(122)
+  # plt.subplot(6, 2, row + 1)
   # plt.imshow(heatmap, cmap='hot')
   # plt.title('Heat Map')
   # fig.tight_layout()
+  # row += 2
 
   out.write(img)
   out2.write(img_boxes)

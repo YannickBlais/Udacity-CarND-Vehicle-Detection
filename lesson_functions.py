@@ -1,17 +1,13 @@
+#
+# Udacity Code:
+#   Most functions found in this file come from Udacity's Vehicle-Detection lesson (www.udacity.com)
+#
+
 import numpy as np
 import cv2
 from skimage.feature import hog
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
-
-
-def convert_color(img, conv='RGB2YCrCb'):
-  if conv == 'RGB2YCrCb':
-    return cv2.cvtColor(img, cv2.COLOR_RGB2YCrCb)
-  if conv == 'BGR2YCrCb':
-    return cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
-  if conv == 'RGB2LUV':
-    return cv2.cvtColor(img, cv2.COLOR_RGB2LUV)
 
 
 def get_hog_features(img, orient, pix_per_cell, cell_per_block,
@@ -52,49 +48,6 @@ def color_hist(img, nbins=32, bins_range=(0, 256)):
   # Return the individual histograms, bin_centers and feature vector
   return hist_features
 
-#
-# def extract_single_image_hog_features(img, orient=9, pix_per_cell=8,
-#                                       cell_per_block=2, hog_channel=0):
-#
-#   # Call get_hog_features() with vis=False, feature_vec=True
-#   if hog_channel == 'ALL':
-#     hog_features = []
-#     for channel in range(img.shape[2]):
-#       hog_features.append(get_hog_features(img[:, :, channel],
-#                                            orient, pix_per_cell, cell_per_block,
-#                                            vis=False, feature_vec=True))
-#     hog_features = np.ravel(hog_features)
-#   else:
-#     hog_features = get_hog_features(img[:, :, hog_channel], orient,
-#                                     pix_per_cell, cell_per_block, vis=False, feature_vec=True)
-#   # Append the new feature vector to the features list
-#   return hog_features
-#
-#
-# def extract_single_img_features(img, cspace='RGB', spatial_size=(32, 32),
-#                                 hist_bins=32, orient=9, pix_per_cell=8,
-#                                 cell_per_block=2, hog_channel=0):
-#   # apply color conversion if other than 'RGB'
-#   if cspace != 'RGB':
-#     if cspace == 'HSV':
-#       feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-#     elif cspace == 'LUV':
-#       feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2LUV)
-#     elif cspace == 'HLS':
-#       feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
-#     elif cspace == 'YUV':
-#       feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
-#     elif cspace == 'YCrCb':
-#       feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2YCrCb)
-#   else:
-#     feature_image = np.copy(img)
-#
-#   hog_features = extract_single_image_hog_features(feature_image, orient, pix_per_cell,
-#                                       cell_per_block, hog_channel)
-#   spatial_features = bin_spatial(feature_image, size=spatial_size)
-#   hist_features = color_hist(feature_image, nbins=hist_bins)
-#   return np.hstack((spatial_features, hist_features, hog_features))
-
 
 def extract_features(imgs, cspace='RGB', spatial_size=(32, 32),
                      hist_bins=32, orient=9, pix_per_cell=8, cell_per_block=2,
@@ -104,9 +57,6 @@ def extract_features(imgs, cspace='RGB', spatial_size=(32, 32),
   # Iterate through the list of images
   for file in imgs:
     image = cv2.imread(file)
-    # single_img_features_display(image, cspace, spatial_size, hist_bins, orient,
-    #                     pix_per_cell, cell_per_block, 0)
-    # image = image * 255
     features.append(
       single_img_features(image, cspace, spatial_size, hist_bins, orient,
                         pix_per_cell, cell_per_block, hog_channel,
@@ -221,10 +171,6 @@ def single_img_features_display(img, color_space='RGB', spatial_size=(32, 32),
 def find_cars(img, color_space, ystart, ystop, scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size,
               hist_bins, hog_img):
 
-  # draw_img = np.copy(img)
-  # draw_img = cv2.cvtColor(draw_img, cv2.COLOR_BGR2RGB)
-  # img = img.astype(np.float32) / 255
-
   xstart = 400
   xstop = 1280
   img_tosearch = img[ystart:ystop, xstart:xstop, :]
@@ -293,19 +239,14 @@ def find_cars(img, color_space, ystart, ystop, scale, svc, X_scaler, orient, pix
 
       # Scale features and make a prediction
       test_features = X_scaler.transform(np.hstack((spatial_features, hist_features, hog_features)).reshape(1, -1))
-      # test_features = X_scaler.transform(np.hstack((shape_feat, hist_feat)).reshape(1, -1))
       test_prediction = svc.predict(test_features)
 
       xbox_left = np.int(xleft * scale)
       ytop_draw = np.int(ytop * scale)
       win_draw = np.int(window * scale)
-      # cv2.rectangle(draw_img, (xbox_left + xstart, ytop_draw + ystart),
-      #               (xbox_left + win_draw + xstart, ytop_draw + win_draw + ystart), (0, 0, 255), 6)
       if test_prediction == 1:
         on_windows.append(((xbox_left + xstart, ytop_draw + ystart),
                           (xbox_left + win_draw + xstart, ytop_draw + win_draw + ystart)))
-
-  # plt.imshow(draw_img)
 
   return on_windows
 
@@ -326,12 +267,6 @@ def search_windows(img, windows, clf, scaler, color_space='RGB',
     # 3) Extract the test window from original image
     test_img = cv2.resize(img[window[0][1]:window[1][1], window[0][0]:window[1][0]], (64, 64))
     # 4) Extract features for that window using single_img_features()
-    # single_img_features_display(test_img, color_space='YUV',
-    #                              spatial_size=spatial_size, hist_bins=hist_bins,
-    #                              orient=orient, pix_per_cell=pix_per_cell,
-    #                              cell_per_block=cell_per_block,
-    #                              hog_channel=hog_channel)
-
     features = single_img_features(test_img, color_space=color_space,
                                    spatial_size=spatial_size, hist_bins=hist_bins,
                                    orient=orient, pix_per_cell=pix_per_cell,
