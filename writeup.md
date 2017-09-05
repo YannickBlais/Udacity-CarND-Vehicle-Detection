@@ -14,10 +14,10 @@ The goals / steps of this project are the following:
 [image2]: ./examples/Car_features.png
 [image3]: ./examples/Not-Car_features.png
 [image4]: ./examples/YCrCb_HOG.png
-[image5]: ./examples/32x32.jpg
-[image6]: ./examples/48x48.jpg
-[image7]: ./examples/64x64.jpg
-[image8]: ./examples/128x128.jpg
+[image5]: ./examples/32x32.png
+[image6]: ./examples/48x48.png
+[image7]: ./examples/64x64.png
+[image8]: ./examples/128x128.png
 [image5]: ./examples/sliding_window.jpg
 [image6]: ./examples/bboxes_and_heat.png
 [image7]: ./examples/labels_map.png
