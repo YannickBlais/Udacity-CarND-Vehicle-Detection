@@ -21,8 +21,8 @@ The goals / steps of this project are the following:
 [image9]: ./examples/all_windows.png
 [image10]: ./examples/all_windows.png
 [image11]: ./examples/heat_map.png
-[image7]: ./examples/labels_map.png
-[image8]: ./examples/output_bboxes.png
+[image12]: ./examples/labels.png
+[image13]: ./examples/final_bboxes.png
 [video1]: ./project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
@@ -114,13 +114,13 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ### Here are six frames and their corresponding heatmaps:
 
-![alt text][image5]
+![alt text][image11]
 
 ### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
+![alt text][image12]
 
 ### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
+![alt text][image13]
 
 
 
