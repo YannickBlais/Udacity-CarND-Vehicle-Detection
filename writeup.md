@@ -20,7 +20,7 @@ The goals / steps of this project are the following:
 [image8]: ./examples/128x128.png
 [image9]: ./examples/all_windows.png
 [image10]: ./examples/all_windows.png
-[image6]: ./examples/bboxes_and_heat.png
+[image11]: ./examples/heat_map.png
 [image7]: ./examples/labels_map.png
 [image8]: ./examples/output_bboxes.png
 [video1]: ./project_video.mp4
@@ -88,7 +88,7 @@ I decided to search window sizes of 32x32, 48x48, 64x64, and 128x128. This code 
 ![alt text][image7]
 ![alt text][image8]
 
-I chose those boxe sizes to perform searches at many different scales, and since the classification was rather fast compared with other options that I tried, I could use a lot of them. The smaller boxes search more on locations in the road far away while the bigger ones on locations nearby the driver. I mostly concentrated the search in the center where I often lost track of the white car (see discussion for more on this).
+I chose those boxe sizes to perform searches at many different scales to maximize the chance of finding a match, and since the classification was rather fast compared with other options that I tried, I could use a lot of them. The smaller boxes search more on locations in the road far away while the bigger ones on locations nearby the driver. I mostly concentrated the search in the center where I often lost track of the white car (see discussion for more on this).
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
@@ -101,12 +101,14 @@ As explained previously, I searched on 4 scales using YCrCb 3-channel HOG featur
 ### Video Implementation
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./project_video.mp4).
 
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
+As proposed in the course, I recorded the positions of positive detections in each frame of the video. From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap. I then assumed each blob corresponded to a vehicle. I constructed bounding boxes to cover the area of each blob detected.
+
+On top of this, as an attempt to filter out false classifications that appear on a single frame, if a box in the current frame does not match a box found in the previous frame, i.e. the center of current box is not somewhere inside a box on previous frame, it is removed.
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
