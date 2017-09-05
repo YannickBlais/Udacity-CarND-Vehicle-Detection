@@ -13,7 +13,11 @@ The goals / steps of this project are the following:
 [image1]: ./examples/car-not-car.png
 [image2]: ./examples/Car_features.png
 [image3]: ./examples/Not-Car_features.png
-[image4]: ./examples/sliding_windows.jpg
+[image4]: ./examples/YCrCb_HOG.png
+[image5]: ./examples/32x32.jpg
+[image6]: ./examples/48x48.jpg
+[image7]: ./examples/64x64.jpg
+[image8]: ./examples/128x128.jpg
 [image5]: ./examples/sliding_window.jpg
 [image6]: ./examples/bboxes_and_heat.png
 [image7]: ./examples/labels_map.png
@@ -50,20 +54,27 @@ Here is an example using the `YUV` color space and HOG parameters of `orientatio
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and settled on parameters that seemed to work best for the givn video: 
+I tried various combinations of parameters and settled on parameters that seemed to work best for the given video: 
 - orient = 32
 - pixels per cell = 16
 - cells per block = 2
 - color space = 'YCrCb', using all channels
+I chose more orientations, but also more pixels per cell (compared with the course) which is is quite fast but still has enough information to obtain good results. Here is an example of HOG image with those parameters:
+
+![alt text][image4]
 
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM sklear's LinearSVC package. This can be found in file training.py, function train_model(), lines XXX through XXX. Moreover, I used GridSearchCV to attempt to try to find the best parameters. I originally used the same parameters as described in sklearn's documentation like this (with svm.SVC):
+I trained a linear SVM sklear's LinearSVC package. This can be found in file training.py, function train_model(), lines XXX through XXX. Moreover, I used GridSearchCV to attempt to try to find the best parameters. I originally used the same parameters as described in sklearn's documentation (with svm.SVC) with 'linear' and 'rbf' kernels, but I found it was quite slow, so I set my parameters simply as this:
 ```
-parameters = {'kernel': ('linear', 'rbf'), 'C': [1, 10]}
+parameters = {'C': [1, 10]}
 ```
-but it turned out that the best parameters found were kernel='rbf' and C=10 were quite slow and I finally settled for simply allowing 'C' between '1' and '10'. However the value chosen by the algorithm was '1', the default value!
+However the value chosen by the algorithm was '1', the default value!
+
+Second, I also use 32x32 spatial features, which is done by simply resizing the image to 32x32 pixels. This task is performed in file lesson_functions.py, lines XXX through XXX.
+
+Third, I used the histogram features with all 3 channels, 32 bins and the whole 8-bits (256 levels) range and this can be found in lesson_functions.py lines XXX through XXX.
 
 ### Sliding Window Search
 
@@ -71,9 +82,12 @@ but it turned out that the best parameters found were kernel='rbf' and C=10 were
 
 I decided to search window sizes of 32x32, 48x48, 64x64, and 128x128. This code is in file detect_vehicles.py, lines XXX through XXX. The different window sizes are represented in this image:
 
-![alt text][image3]
+![alt text][image5]
+![alt text][image6]
+![alt text][image7]
+![alt text][image8]
 
-I chose those boxe sizes to perform searches at many different scales, and since the classification was rather fast compared with other options I tried, I could use a lot of boxes. have a lot of different 
+I chose those boxe sizes to perform searches at many different scales, and since the classification was rather fast compared with other options I tried, I could use a lot of them. I mostly concentrated the search in the center where I often lost track of the white car (see discussion for more on this).
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
